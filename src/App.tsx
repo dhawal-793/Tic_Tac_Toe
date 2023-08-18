@@ -6,8 +6,10 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import Icons from './components/Icons';
 import { useEffect, useState } from 'react';
+import Snackbar from 'react-native-snackbar';
+
+import Icons from './components/Icons';
 
 function App(): JSX.Element {
   const [isGameStarted, setisGameStarted] = useState<boolean>(false)
@@ -54,16 +56,19 @@ function App(): JSX.Element {
       gameState[6] !== 'empty' && gameState[7] !== 'empty' && gameState[8] !== 'empty'
     ) {
       setGameStatus(`Draw! Restart Again`)
-      // setisGameStarted(false)
     }
   }
 
   const handlePress = (index: number) => {
     if (gameStatus !== "") {
-      // SHOW SNACKBAR
-      return
+      return Snackbar.show({
+        text: 'Restart the Game to continue playing.',
+        textColor: "#ffffff",
+        backgroundColor: "#EDC126",
+      })
     }
     if (!isGameStarted) setisGameStarted(true)
+
     if (gameState[index] === 'empty') {
       setGameState(gameState.map((item, i) => {
         if (i === index) {
@@ -73,7 +78,11 @@ function App(): JSX.Element {
       }))
     }
     else {
-      // SHOW SNACKBAR
+      Snackbar.show({
+        text: 'You cannot play at already played position.',
+        textColor: "#ffffff",
+        backgroundColor: "#E21717",
+      })
     }
   }
 
@@ -85,19 +94,24 @@ function App(): JSX.Element {
     }
   }, [gameState])
 
-  useEffect(() => { }, [isGameStarted])
-
   return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? '#000' : '#fff' }]}>
       <View style={styles.gameContainer}>
         <View
-          style={[styles.header,
-          {
+          style={[styles.header, {
             backgroundColor: !gameStatus ? "#758283" :
               gameStatus !== "Draw! Restart Again" ? "#4DD637" : "#242B2E"
           }]}>
           {gameStatus !== "" ? (
-            <Text style={styles.gameStatusText}>{gameStatus}</Text>
+            gameStatus === "Draw! Restart Again" ?
+              <Text style={styles.gameStatusText}>
+                Draw! Restart Again
+              </Text>
+              :
+              <View style={styles.playerInfo}>
+                <Text style={styles.gameStatusText}>Winner:</Text>
+                <Icons name={currentPlayer} size={22} />
+              </View>
           ) : (
             <View style={styles.playerInfo}>
               <Text style={styles.gameStatusText}>Current Player :</Text>
@@ -111,14 +125,14 @@ function App(): JSX.Element {
           keyExtractor={(_, index) => index.toString()}
           data={gameState}
           renderItem={({ item, index }) => (
-            <Pressable onPress={() => handlePress(index)} style={styles.boardTile}>
+            <Pressable onPress={() => handlePress(index)} style={[styles.boardTile, { backgroundColor: isDarkMode ? '#6A1B4D' : '#c5ecf0' }]}>
               <Icons name={item} />
             </Pressable>
           )}
         />
         <View style={styles.buttonContainer}>
           {isGameStarted && (
-            <Pressable onPress={reStartGame} style={styles.button}>
+            <Pressable onPress={reStartGame} style={[styles.button,{backgroundColor:isDarkMode?'#207398':'#51E1ED'}]}>
               <Text style={styles.buttonText}>Restart</Text>
             </Pressable>
           )}
@@ -175,7 +189,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 6,
-    backgroundColor: '#CAD5E2'
   },
   buttonContainer: {
     height: 45
@@ -183,7 +196,6 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     width: 200,
-    backgroundColor: '#51E1ED',
     height: 40,
     display: 'flex',
     alignItems: 'center',
