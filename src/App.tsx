@@ -99,7 +99,7 @@ function App(): JSX.Element {
           ) : (
             <View style={styles.playerInfo}>
               <Text style={styles.playerText}>Current Player :</Text>
-              <Icons name={currentPlayer} />
+              <Icons name={currentPlayer} size={22} />
             </View>
           )}
         </View>
