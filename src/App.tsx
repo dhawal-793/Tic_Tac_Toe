@@ -1,5 +1,6 @@
 import {
-  SafeAreaView,
+  FlatList,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -72,16 +73,32 @@ function App(): JSX.Element {
   }
 
   return (
-    <SafeAreaView>
+    <View>
       <View>
         <Text>Tic Tac Toe</Text>
         <View>
-          <Icons name="circle" />
-          <Icons name="cross" />
-          <Icons name="crossds" />
+          <Text>Current Player: {currentPlayer}</Text>
         </View>
+
+        <FlatList
+          numColumns={3}
+          keyExtractor={(_, index) => index.toString()}
+          data={gameState}
+          renderItem={({ item, index }) => (
+            <Pressable onPress={() => handlePress(index)}>
+              <Icons name={item} />
+            </Pressable>
+          )}
+        />
+        {/* restart button */}
+        <Pressable onPress={reStartGame}>
+          <Text>Restart</Text>
+        </Pressable>
+        {gameWinner !== "" && (
+          <Text>{gameWinner}</Text> // winner text
+        )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
