@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useColorScheme,
 } from 'react-native';
 import Icons from './components/Icons';
 import { useEffect, useState } from 'react';
@@ -14,6 +15,7 @@ function App(): JSX.Element {
   const [gameStatus, setGameStatus] = useState<string>("")
   const [gameState, setGameState] = useState<string[]>(new Array(9).fill('empty', 0, 9))
 
+  const isDarkMode = useColorScheme() === 'dark';
 
   const reStartGame = () => {
     setisGameStarted(false)
@@ -86,19 +88,19 @@ function App(): JSX.Element {
   useEffect(() => { }, [isGameStarted])
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? '#000' : '#fff' }]}>
       <View style={styles.gameContainer}>
         <View
           style={[styles.header,
           {
-            backgroundColor: !gameStatus ? "#CAD5E2" :
-              gameStatus !== "Draw! Restart Again" ? "#4DD637" : "#758283"
+            backgroundColor: !gameStatus ? "#758283" :
+              gameStatus !== "Draw! Restart Again" ? "#4DD637" : "#242B2E"
           }]}>
           {gameStatus !== "" ? (
             <Text style={styles.gameStatusText}>{gameStatus}</Text>
           ) : (
             <View style={styles.playerInfo}>
-              <Text style={styles.playerText}>Current Player :</Text>
+              <Text style={styles.gameStatusText}>Current Player :</Text>
               <Icons name={currentPlayer} size={22} />
             </View>
           )}
@@ -130,7 +132,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'black',
     paddingHorizontal: 22,
     paddingVertical: 84,
   },
@@ -156,10 +157,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 15
   },
-  playerText: {
-    fontSize: 20,
+  gameStatusText: {
+    fontSize: 18,
+    color: 'white',
     fontWeight: '600',
-    color: 'black',
   },
   gameBoard: {
     height: 318,
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 6,
-    backgroundColor: 'white'
+    backgroundColor: '#CAD5E2'
   },
   buttonContainer: {
     height: 45
@@ -193,11 +194,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
-  },
-  gameStatusText: {
-    fontSize: 18,
-    color: 'white',
-    fontWeight: '600',
   },
 });
 
